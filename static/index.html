@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Chat Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">AI</div>
+        <div>
+          <h1>DEN AI Assistant</h1>
+          <p>Coding · Data · Interviews</p>
+        </div>
+      </div>
+
+      <div id="auth-panel" class="auth-panel">
+        <p id="user-greeting" class="user-greeting hidden">Welcome back!</p>
+        <div id="auth-buttons" class="auth-buttons">
+          <button id="login-btn" class="btn btn-secondary" type="button">Log In</button>
+          <button id="signup-btn" class="btn btn-primary" type="button">Sign Up</button>
+        </div>
+        <div id="user-actions" class="user-actions hidden">
+          <button id="subscribe-btn" class="btn btn-accent" type="button">Subscribe ₹99/mo</button>
+          <button id="logout-btn" class="btn btn-secondary" type="button">Log Out</button>
+        </div>
+        <p id="plan-status" class="plan-status"></p>
+      </div>
+
+      <button id="new-chat-btn" class="btn btn-primary" type="button">+ New Chat</button>
+
+      <section class="capabilities">
+        <h2>Capabilities</h2>
+        <ul id="capabilities-list"></ul>
+      </section>
+
+      <div class="sidebar-footer">
+        <div id="status-pill" class="status-pill">Checking...</div>
+        <p class="hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</p>
+      </div>
+    </aside>
+
+    <main class="chat-panel">
+      <header class="chat-header">
+        <div>
+          <h2>Chat</h2>
+          <p id="model-label">Loading assistant info...</p>
+        </div>
+      </header>
+
+      <div id="messages" class="messages" aria-live="polite"></div>
+
+      <div id="welcome" class="welcome">
+        <h3>How can I help you today?</h3>
+        <p>Sign up for free, then chat about programming, SQL, machine learning, and more.</p>
+        <div class="suggestions">
+          <button class="suggestion" type="button" data-prompt="Explain binary search with Python code and time complexity.">Binary search tutorial</button>
+          <button class="suggestion" type="button" data-prompt="Help me prepare for a Python developer interview. Start with easy questions.">Interview prep</button>
+          <button class="suggestion" type="button" data-prompt="Debug this SQL query that returns duplicate rows and suggest fixes.">SQL debugging</button>
+          <button class="suggestion" type="button" data-prompt="Teach me the basics of machine learning from beginner to intermediate level.">Learn ML basics</button>
+        </div>
+      </div>
+
+      <form id="chat-form" class="composer" autocomplete="off">
+        <div class="composer-box">
+          <textarea
+            id="user-input"
+            rows="1"
+            placeholder="Sign in to start chatting..."
+            aria-label="Message input"
+            disabled
+          ></textarea>
+          <button id="send-btn" class="btn btn-send" type="submit" aria-label="Send message" disabled>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 2 11 13"></path>
+              <path d="M22 2 15 22 11 13 2 9 22 2z"></path>
+            </svg>
+          </button>
+        </div>
+        <p class="composer-note">AI can make mistakes. Verify important information.</p>
+      </form>
+    </main>
+  </div>
+
+  <div id="auth-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+      <button class="modal-close" type="button" data-close-modal aria-label="Close">&times;</button>
+      <h3 id="auth-modal-title">Sign Up</h3>
+      <p id="auth-modal-subtitle" class="modal-subtitle">Create an account to start chatting.</p>
+      <form id="auth-form">
+        <label class="field hidden" id="name-field">
+          <span>Full name</span>
+          <input id="auth-name" type="text" placeholder="Your name" autocomplete="name" />
+        </label>
+        <label class="field">
+          <span>Email</span>
+          <input id="auth-email" type="email" placeholder="you@example.com" autocomplete="email" required />
+        </label>
+        <label class="field">
+          <span>Password</span>
+          <input id="auth-password" type="password" placeholder="Min. 6 characters" autocomplete="current-password" required minlength="6" />
+        </label>
+        <button id="auth-submit-btn" class="btn btn-primary" type="submit">Create Account</button>
+      </form>
+      <p class="modal-switch">
+        <span id="auth-switch-text">Already have an account?</span>
+        <button id="auth-switch-btn" type="button">Log in</button>
+      </p>
+    </div>
+  </div>
+
+  <div id="payment-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="payment-modal-title">
+      <button class="modal-close" type="button" data-close-modal aria-label="Close">&times;</button>
+      <h3 id="payment-modal-title">Subscribe to Premium</h3>
+      <p class="modal-subtitle">Unlimited AI chat for 30 days — ₹99/month</p>
+      <div class="payment-methods">
+        <button class="payment-method" type="button" data-method="upi">
+          <strong>UPI</strong>
+          <span>PhonePe, Paytm, BHIM</span>
+        </button>
+        <button class="payment-method" type="button" data-method="google_pay">
+          <strong>Google Pay</strong>
+          <span>Wallet payment</span>
+        </button>
+        <button class="payment-method" type="button" data-method="netbanking">
+          <strong>Net Banking</strong>
+          <span>All major banks</span>
+        </button>
+      </div>
+      <p class="payment-note">Secured by Razorpay. Supports real-time UPI, wallets &amp; net banking.</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
